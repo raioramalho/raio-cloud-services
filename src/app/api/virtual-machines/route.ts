@@ -64,7 +64,7 @@ async function createVirtualMachine(dto: CreateVirtualMachineDto, cidataPath: st
 }
 
 async function startVirtualMachine(vmSettings: VirtualMachineSettings) {
-  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -c ${vmSettings.cpu} -m ${vmSettings.memory} -i ${vmSettings.image} -s ${vmSettings.storage} -u ${vmSettings.cidata} -g`);
+  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -c ${vmSettings.cpu} -m ${vmSettings.memory} -i ${vmSettings.image} -s ${vmSettings.storage} -u ${vmSettings.cidata} -g -d`);
 
   if (stderr) {
     throw new Error(stderr);
