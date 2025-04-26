@@ -1,8 +1,0 @@
-FROM node:23-alpine
-
-WORKDIR /app
-COPY . .
-RUN npm install
-RUN npx nest build
-
-CMD ["npm", "run", "start:prod"]
