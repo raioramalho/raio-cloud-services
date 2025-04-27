@@ -1,171 +1,112 @@
-"use server";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import fs from 'fs';
 import path from 'path';
-
-const regions = [
-  { value: "br-centro-1", label: "Brasil Centro" },
-  { value: "br-sudeste-1", label: "Brasil Sudeste" },
-  { value: "br-norte-1", label: "Brasil Norte" },
-];
-const vmSizes = [
-  { value: "small", label: "Pequena (2 vCPU, 4GB RAM)", cpu: 2, memory: '4G' },
-  { value: "medium", label: "Média (4 vCPU, 8GB RAM)", cpu: 4, memory: '8G' },
-  { value: "large", label: "Grande (8 vCPU, 16GB RAM)", cpu: 8, memory: '16G' },
-];
+import NewInstanceButton from "@/components/ux/new-instance-button";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { RefreshCw, Trash2 } from "lucide-react";
+import { revalidatePath } from 'next/cache';
+import { VirtualMachineSettings } from './api/types/instance.types';
 
 export default async function Home() {
-  const images = fs.readdirSync(path.join(process.cwd(), 'public/images'));
+  const vmFiles = fs.readdirSync(path.join(process.cwd(), 'tmp'));
+  const vms = vmFiles.filter(file => file.endsWith('.json')).map(file => {
+    const content = fs.readFileSync(path.join(process.cwd(), 'tmp', file), 'utf8');
+    return JSON.parse(content) as VirtualMachineSettings;
+  });
 
-  async function handleSubmit(data: FormData) {
-    "use server";
-    const vmName = data.get("vmName");
-    const vmSize = data.get("vmSize") as string;
-    const diskSize = data.get("diskSize");
-    const image = data.get("image");
-    const sshKey = data.get("sshKey");
-    const userName = data.get("userName");
+  async function deleteVM(formData: FormData) {
+    'use server';
+    const name = formData.get('name') as string;
+    const pid = Number(formData.get('pid'));
+    const id = formData.get('id') as string;
 
-    const selectedSize = vmSizes.find(size => size.value === vmSize);
-
-    const req = await fetch("http://localhost:3000/api/virtual-machines", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: vmName,
-        size: {
-          cpu: selectedSize?.cpu,
-          memory: selectedSize?.memory
-        },
-        diskSize: diskSize,
-        image: image,
-        sshKey: sshKey,
-        userName: userName,
-      }),
+    await fetch('http://localhost:3000/api/delete-instance', {     
+      method: 'POST',
+      body: JSON.stringify({ name, pid, id }),
     });
-
-    const rdata = await req.json();
-    console.log(JSON.stringify(rdata));
+    
+    revalidatePath('/');
   }
+
+  async function refresh() {
+    'use server';
+    revalidatePath('/');
+  }
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'Ativo':
+        return 'bg-green-100 text-green-800';
+      case 'Inativo':
+        return 'bg-red-100 text-red-800';
+      case 'Pendente':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4 md:p-8 lg:p-12 bg-background">
-      <form className="w-full max-w-4xl space-y-8 rounded-lg border p-4 md:p-6 lg:p-8 shadow-lg" action={handleSubmit}>
-        {/* Etapa 1: Informações Básicas */}
-        <div className="space-y-6">
+      <div className="w-full max-w-4xl space-y-8 rounded-lg border p-4 md:p-6 lg:p-8 shadow-lg">
+        <div className="flex justify-between items-center">
           <div className="space-y-2">
-            <Label htmlFor="vmName" className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-              Criar Máquina Virtual
-            </Label>
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
+              Máquinas Virtuais
+            </h1>
             <p className="text-xs md:text-sm lg:text-base text-muted-foreground">
-              Configure sua nova máquina virtual seguindo as etapas abaixo.
+              Lista de máquinas virtuais e seus status
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="vmName" className="text-sm md:text-base lg:text-lg">Nome da VM</Label>
-              <Input type="text" name="vmName" placeholder="Digite o nome da VM" required className="text-sm md:text-base" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="region" className="text-sm md:text-base lg:text-lg">Região</Label>
-              <Select name="region" required>
-                <SelectTrigger className="w-full text-sm md:text-base">
-                  <SelectValue placeholder="Selecione a região..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {regions.map((region) => (
-                    <SelectItem key={region.value} value={region.value} className="text-sm md:text-base">
-                      {region.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <form action={refresh}>
+            <Button variant="outline" size="icon" type="submit">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </form>
         </div>
 
-        {/* Etapa 2: Configurações da VM */}
-        <div className="space-y-6">
-          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold">Configurações da VM</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="image" className="text-sm md:text-base lg:text-lg">Imagem</Label>
-              <Select name="image" required>
-                <SelectTrigger className="w-full text-sm md:text-base">
-                  <SelectValue placeholder="Selecione a imagem..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {images.map((image) => (
-                    <SelectItem key={image} value={image} className="text-sm md:text-base">
-                      {image}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="vmSize" className="text-sm md:text-base lg:text-lg">Tamanho da VM</Label>
-              <Select name="vmSize" required>
-                <SelectTrigger className="w-full text-sm md:text-base">
-                  <SelectValue placeholder="Selecione o tamanho da VM..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {vmSizes.map((size) => (
-                    <SelectItem key={size.value} value={size.value} className="text-sm md:text-base">
-                      {size.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-
-        {/* Etapa 3: Armazenamento e Segurança */}
-        <div className="space-y-6">
-          <h3 className="text-lg md:text-xl lg:text-2xl font-semibold">Armazenamento e Segurança</h3>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="diskSize" className="text-sm md:text-base lg:text-lg">Tamanho do Disco (GB)</Label>
-              <Input type="number" name="diskSize" placeholder="Digite o tamanho do disco em GB" required min="10" className="text-sm md:text-base" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="userName" className="text-sm md:text-base lg:text-lg">Nome do Usuário</Label>
-              <Input type="text" name="userName" placeholder="Digite o nome do usuário" required className="text-sm md:text-base" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="sshKey" className="text-sm md:text-base lg:text-lg">Chave Pública SSH</Label>
-              <Textarea 
-                name="sshKey" 
-                placeholder="Cole sua chave pública SSH aqui" 
-                required 
-                className="min-h-[100px] text-sm md:text-base"
-              />
-            </div>
-          </div>
-        </div>
-
-        <Button type="submit" className="w-full text-sm md:text-base lg:text-lg py-2 md:py-3">
-          Criar VM
-        </Button>
-      </form>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>VM</TableHead>
+              <TableHead>Imagem Base</TableHead>
+              <TableHead>Usuário</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {vms.map((vm, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{vm.name}</TableCell>
+                <TableCell>{vm.baseImage}</TableCell>
+                <TableCell>{vm.username}</TableCell>
+                <TableCell>
+                  <span className={`px-2 py-1 text-sm rounded-full ${getStatusStyle(vm.status)}`}>
+                    {vm.status || 'Pendente'}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <form action={deleteVM}>
+                    <input type="hidden" name="name" value={vm.name} />
+                    <input type="hidden" name="pid" value={vm.pid} />
+                    <input type="hidden" name="id" value={vm.id} />
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      type="submit"
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  </form>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        
+        <NewInstanceButton />
+      </div>
     </main>
   );
 }

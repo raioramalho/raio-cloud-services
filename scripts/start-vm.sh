@@ -67,16 +67,8 @@ while [[ $# -gt 0 ]]; do
             ;;
         -k|--kill)
             if [ -f "$PIDFILE" ]; then
-                echo "Stopping VM $NAME (PID: $(cat $PIDFILE))..."
-                # Send SIGTERM first, then SIGKILL if needed
-                PID=$(cat $PIDFILE)
-                kill $PID
-                # Wait a bit to see if it terminates gracefully
-                sleep 2
-                if ps -p $PID > /dev/null 2>&1; then
-                    echo "VM didn't stop gracefully, forcing termination..."
-                    kill -9 $PID
-                fi
+                echo "Stopping VM $NAME..."
+                kill $(cat $PIDFILE)
                 rm -f $PIDFILE
                 echo "VM stopped."
                 exit 0

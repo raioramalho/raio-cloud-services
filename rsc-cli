@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Detect OS
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    echo "{\"os\": \"linux\"}"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "{\"os\": \"darwin\"}"
+elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
+    echo "{\"os\": \"windows\"}"
+else
+    echo "{\"error\": \"Unsupported operating system: $OSTYPE\"}"
+    exit 1
+fi

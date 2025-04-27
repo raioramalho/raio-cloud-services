@@ -1,4 +1,4 @@
-POST http://localhost:3000/api/virtual-machines
+POST http://localhost:3000/api/new-instance
 Content-Type: application/json
 
 {
@@ -8,4 +8,15 @@ Content-Type: application/json
   "image": "debian-11-adm64.img",
   "sshKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHw9l8Kt0IG1CEsftGTUzxXW60QeHLi1OgggNGB37g0y raiocloud@gmail.com",
   "userName": "root"
+}
+
+### ----
+
+POST http://localhost:3000/api/delete-instance
+Content-Type: application/json
+
+{
+  "id": "e07ab4b0-cb87-4a33-827c-3b60f3e0f4d8",
+  "name": "nginx",
+  "pid": 10900,
 }
