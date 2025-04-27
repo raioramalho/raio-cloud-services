@@ -1,11 +1,13 @@
 {
-  "name": "raiosystems-devops-system",
-  "version": "0.1.0",
+  "name": "raio-cloud-services",
+  "version": "1.0.0",
   "private": true,
+  "author": {"email": "ramalho.sit@gmail.com", "name": "Alan Ramalho", "url": "https://github.com/raioramalho"},
+  "description": "Aplicação para gerenciamento de serviços de raio",
   "scripts": {
-    "dev": "next dev",
+    "dev": "sh ./tpm/check-status.sh > /dev/null 2> dev-check-status-output.log & next dev",     
     "build": "next build",
-    "start": "next start",
+    "start": "sh ./tpm/check-status.sh > /dev/null 2> production-check-status-output.log &",
     "lint": "next lint"
   },
   "dependencies": {

@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Raio Cloud Services
 
-## Getting Started
+Sistema de gerenciamento de máquinas virtuais baseado em web com QEMU/KVM.
 
-First, run the development server:
+## Sobre o Projeto
+
+Raio Cloud Services é uma aplicação full-stack para criação, gerenciamento e controle de máquinas virtuais QEMU/KVM através de uma interface web moderna. O projeto consiste em uma plataforma para gerenciamento de infraestrutura local permitindo provisionamento rápido de VMs.
+
+## Stack Tecnológica
+
+- **Backend**: Next.js API Routes (Node.js/TypeScript)
+- **Frontend**: React/Next.js com UI Shadcn
+- **Virtualização**: QEMU/KVM com libvirt
+- **Infraestrutura**: Scripts Bash para gerenciamento das VMs
+
+## Funcionalidades
+
+- Criação de VMs com configurações personalizáveis
+- Gerenciamento do ciclo de vida das VMs (iniciar, parar, excluir)
+- Configuração de rede com port forwarding automático
+- Integração com SSH via chaves públicas
+- Dashboard com status das VMs
+
+## Requisitos
+
+- Ubuntu ou distribuição Linux compatível
+- QEMU/KVM e libvirt
+- Node.js (LTS)
+
+## Instalação
 
 ```bash
+# Clone o repositório
+git clone https://github.com/usuario/raio-cloud-services.git
+cd raio-cloud-services
+
+# Instale as dependências
+npm install
+
+# Execute o script de instalação
+sudo bash scripts/install/rcs-install-ubuntu.sh
+
+# Inicie a aplicação
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Arquitetura
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O sistema é dividido em três componentes principais:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Interface Web**: Dashboard para gerenciamento das VMs
+2. **API REST**: Endpoints para controle das operações
+3. **Scripts de Virtualização**: Camada de integração com QEMU/KVM
 
-## Learn More
+## Contribuição
 
-To learn more about Next.js, take a look at the following resources:
+Contribuições são bem-vindas! Abra uma issue para discutir suas ideias ou envie um Pull Request.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Licença
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
