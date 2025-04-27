@@ -1,27 +1,34 @@
 #!/bin/bash
 
-# Get the current directory
-DIR="$(dirname "${BASH_SOURCE[0]}")"
-JSON_FILE="$DIR/../tmp/*.json"
-
 while true; do
-    # Get VM status from start-vm.sh
-    VM_STATUS=$("$DIR/start-vm.sh" -l)
+    echo "Checking PIDs from .tmp/*.json files..."
     
-    # Extract PID from VM status output
-    PID=$(echo "$VM_STATUS" | grep -o "PID: [0-9]*" | cut -d' ' -f2)
-
-    # Check if PID is not empty and process is running
-    if [ ! -z "$PID" ] && ps -p $PID > /dev/null 2>&1; then
-        # Check if port 2222 is open
-        if netstat -tuln | grep -q ":2222 "; then
-            # Update status to "Ativo" in new JSON
-            echo "$(jq '.status = "Ativo"' "$JSON_FILE")"
-            echo "Status: Ativo - PID: $PID"
-        fi
+    # Check if .tmp directory exists
+    if [ -d "./tmp" ]; then
+        # Find all JSON files and extract PIDs
+        for file in ./tmp/*.json; do
+            if [ -f "$file" ]; then
+                pid=$(jq -r '.pid' "$file")
+                name=$(jq -r '.name' "$file")
+                status=$(jq -r '.status' "$file")
+                
+                if [ "$pid" != "0" ] && ps -p $pid > /dev/null; then
+                    if [ "$status" != "Ativo" ]; then
+                        echo "VM: $name - PID: $pid - Status: Updating to Ativo"
+                        # Update status to "Ativo" in the JSON file
+                        jq '.status = "Ativo"' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+                    fi
+                else
+                    echo "VM: $name - PID: $pid - Status: Updating to Inativo"
+                    # Update status to "Inativo" in the JSON file
+                    jq '.status = "Inativo"' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+                fi
+            fi
+        done
     else
-        echo "Status: Inativo - PID não encontrado"
+        echo "Directory ./tmp not found"
     fi
     
-    sleep 5
+    # Wait 10 seconds before next check
+    sleep 10
 done

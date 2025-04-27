@@ -56,37 +56,6 @@ async function startVirtualMachine(vmSettings: VirtualMachineSettings): Promise<
   return { output: stdout, pid };
 }
 
-export async function DELETE(requisicao: NextRequest) {
-  try {
-    const { name, pid } = await requisicao.json()
-
-    const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -k ${pid}`)
-    
-    if (stderr) {
-      throw new Error(stderr)
-    }
-
-    await execAsync(`rm -f ./tmp/${name}*`)
-
-    return NextResponse.json(
-      {
-        status: 'SUCCESS',
-        message: 'Virtual machine deleted successfully'
-      },
-      { status: 200 }
-    )
-  } catch (erro: any) {
-    console.error(`Erro ao processar requisição: ${erro.message}`)
-    return NextResponse.json(
-      {
-        erro: 'Erro ao processar requisição',
-        detalhes: erro.message
-      },
-      { status: 500 }
-    )
-  }
-}
-
 export async function POST(requisicao: NextRequest) {
 
   try {

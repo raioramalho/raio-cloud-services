@@ -3,7 +3,7 @@ import path from 'path';
 import NewInstanceButton from "@/components/ux/new-instance-button";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { RefreshCw, Trash2 } from "lucide-react";
+import { RefreshCw, Trash2, Play, Square } from "lucide-react";
 import { revalidatePath } from 'next/cache';
 import { VirtualMachineSettings } from './api/types/instance.types';
 
@@ -23,6 +23,36 @@ export default async function Home() {
     await fetch('http://localhost:3000/api/delete-instance', {     
       method: 'POST',
       body: JSON.stringify({ name, pid, id }),
+    });
+    
+    revalidatePath('/');
+  }
+
+  async function startVM(formData: FormData) {
+    'use server';
+    const id = formData.get('id') as string;
+
+    await fetch('http://localhost:3000/api/start-instance', {     
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    });
+    
+    revalidatePath('/');
+  }
+
+  async function stopVM(formData: FormData) {
+    'use server';
+    const id = formData.get('id') as string;
+
+    await fetch('http://localhost:3000/api/stop-instance', {     
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
     });
     
     revalidatePath('/');
@@ -86,7 +116,27 @@ export default async function Home() {
                     {vm.status || 'Pendente'}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex gap-2">
+                  <form action={startVM}>
+                    <input type="hidden" name="id" value={vm.id} />
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      type="submit"
+                    >
+                      <Play className="h-4 w-4 text-green-500" />
+                    </Button>
+                  </form>
+                  <form action={stopVM}>
+                    <input type="hidden" name="id" value={vm.id} />
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      type="submit"
+                    >
+                      <Square className="h-4 w-4 text-yellow-500" />
+                    </Button>
+                  </form>
                   <form action={deleteVM}>
                     <input type="hidden" name="name" value={vm.name} />
                     <input type="hidden" name="pid" value={vm.pid} />
