@@ -1,0 +1,54 @@
+name: Pipelines de qualidade
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  security:
+    name: Verificar credenciais e segredos
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Instalar dependências
+        run: |
+          npm install -g @secretlint/quick-start
+          npm install
+
+      - name: Executar Secretlint
+        run: npx secretlint "**/*"
+
+      - name: Verificar credenciais hardcoded no Next.js
+        run: |
+          find ./frontend -type f -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" | xargs grep -l "process.env"
+          find ./frontend -type f -name ".env*" -exec sh -c 'echo "Verificando {}"; cat {} | grep -v "^#" | grep "."' \;
+
+      - name: Verificar credenciais hardcoded no NestJS
+        run: |
+          find ./backend -type f -name "*.ts" | xargs grep -l "process.env"
+          find ./backend -type f -name ".env*" -exec sh -c 'echo "Verificando {}"; cat {} | grep -v "^#" | grep "."' \;
+
+      - name: Script de segurança personalizado
+        run: |
+          chmod +x ./scripts/security-check.sh
+          ./scripts/security-check.sh
+
+      - name: Verificar chaves de API e tokens
+        run: |
+          find . -type f -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/.git/*" -exec grep -l -i "api[_-]key\|api[_-]token\|access[_-]token\|secret[_-]key" {} \;
+
+      - name: Notificar se problemas forem encontrados
+        if: failure()
+        run: |
+          echo "Problemas de segurança foram encontrados no código!"
+          exit 1
