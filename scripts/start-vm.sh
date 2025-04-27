@@ -239,6 +239,7 @@ start_qemu() {
     fi
     
     cmd+=" -net nic -net user,hostfwd=tcp::2222-:22,hostfwd=tcp::8080-:80,hostfwd=tcp::8443-:443"
+    # cmd+=" -netdev tap,id=net0,ifname=tap0 -device e1000,netdev=net0"
     
     if [ $GRAPHIC -eq 0 ]; then
         cmd+=" -nographic"
