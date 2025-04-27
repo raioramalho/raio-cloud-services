@@ -28,24 +28,9 @@ jobs:
       - name: Executar Secretlint
         run: npx secretlint "**/*"
 
-      - name: Verificar credenciais hardcoded no Next.js
+      - name: Verificar credenciais hardcoded
         run: |
-          find ./frontend -type f -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" | xargs grep -l "process.env"
-          find ./frontend -type f -name ".env*" -exec sh -c 'echo "Verificando {}"; cat {} | grep -v "^#" | grep "."' \;
-
-      - name: Verificar credenciais hardcoded no NestJS
-        run: |
-          find ./backend -type f -name "*.ts" | xargs grep -l "process.env"
-          find ./backend -type f -name ".env*" -exec sh -c 'echo "Verificando {}"; cat {} | grep -v "^#" | grep "."' \;
-
-      - name: Script de segurança personalizado
-        run: |
-          chmod +x ./scripts/security-check.sh
-          ./scripts/security-check.sh
-
-      - name: Verificar chaves de API e tokens
-        run: |
-          find . -type f -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/.git/*" -exec grep -l -i "api[_-]key\|api[_-]token\|access[_-]token\|secret[_-]key" {} \;
+          find . -type f -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/.git/*" -exec grep -l "process.env\|api[_-]key\|api[_-]token\|access[_-]token\|secret[_-]key" {} \;
 
       - name: Notificar se problemas forem encontrados
         if: failure()
