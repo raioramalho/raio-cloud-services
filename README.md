@@ -1,6 +1,6 @@
 # Raio Cloud Services
 
-Sistema de gerenciamento de máquinas virtuais baseado em web com QEMU/KVM.
+Miniatura de cloud no seu HomeLab.
 
 ## Sobre o Projeto
 
