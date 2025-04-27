@@ -253,20 +253,24 @@ start_qemu() {
         echo "Starting VM '$NAME' in background..."
         echo "Use '$0 -k -n $NAME' to stop the VM."
         echo "SSH access: ssh -p 2222 user@localhost"
-        echo "Web access: http://localhost:8080 or https://localhost:8443"
-        
-        # Use different approaches based on OS
-        if [ "$OS_TYPE" = "Darwin" ]; then
-            # macOS approach: use nohup to avoid fork() issues
-            nohup $cmd > ./tmp/${NAME}.log 2>&1 &
-            PID=$!
-            echo $PID > $PIDFILE
-            echo "VM started with PID: $PID (logs at ./tmp/${NAME}.log)"
-        else
-            # Linux approach: use QEMU's native daemonize
-            cmd+=" -daemonize -pidfile $PIDFILE"
-            eval "$cmd"
-        fi
+        echo "Web access: http://localhost:8080 or https://localhost:8443"        
+    # Use different approaches based on OS
+    
+    if [ "$OS_TYPE" = "Darwin" ]; then
+        # macOS approach: use nohup to avoid fork() issues
+        nohup bash -c "$cmd" > >(while read -r line; do
+            echo "{\"timestamp\":\"$(date '+%Y-%m-%dT%H:%M:%S')\", \"message\":$(printf '%q' "$line")}" >> ./tmp/${NAME}.log
+        done) 2>&1 &
+        PID=$!
+        echo $PID > $PIDFILE
+        echo "{\"timestamp\":\"$(date '+%Y-%m-%dT%H:%M:%S')\", \"status\":\"VM started\", \"pid\":$PID, \"logfile\":\"./tmp/${NAME}.log\"}"
+    else
+        # Linux approach: use QEMU's native daemonize
+        cmd+=" -daemonize -pidfile $PIDFILE"
+        eval "$cmd"
+        echo "{\"timestamp\":\"$(date '+%Y-%m-%dT%H:%M:%S')\", \"status\":\"VM started (daemonized)\", \"pidfile\":\"$PIDFILE\"}"
+    fi
+
     else
         echo "Starting VM..."
         eval "$cmd"
