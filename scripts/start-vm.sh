@@ -8,7 +8,7 @@ GRAPHIC=0
 CPUS="2"
 DAEMON=0
 NAME="qemu-vm"
-PIDFILE="/tmp/qemu-${NAME}.pid"
+PIDFILE="./tmp/qemu-${NAME}.pid"
 JSON_OUTPUT=0
 # Detect OS for platform-specific adjustments
 OS_TYPE="$(uname -s)"
@@ -62,18 +62,16 @@ while [[ $# -gt 0 ]]; do
             ;;
         -n|--name)
             NAME="$2"
-            PIDFILE="/tmp/qemu-${NAME}.pid"
+            PIDFILE="./tmp/qemu-${NAME}.pid"
             shift 2
             ;;
         -k|--kill)
             if [ -f "$PIDFILE" ]; then
-                echo "Stopping VM $NAME..."
                 kill $(cat $PIDFILE)
-                rm -f $PIDFILE
-                echo "VM stopped."
+                rm $PIDFILE
                 exit 0
             else
-                echo "No running VM found with name $NAME"
+                echo "No running PID"
                 exit 1
             fi
             ;;
@@ -146,7 +144,7 @@ while [[ $# -gt 0 ]]; do
                 
                 # Process PID files
                 first_pid=true
-                pid_files=$(ls /tmp/qemu-*.pid 2>/dev/null || echo "")
+                pid_files=$(ls ./tmp/qemu-*.pid 2>/dev/null || echo "")
                 for pidfile in $pid_files; do
                     if [ -f "$pidfile" ]; then
                         if [ "$first_pid" = true ]; then
@@ -209,7 +207,7 @@ while [[ $# -gt 0 ]]; do
                 # Check for pidfiles in /tmp
                 echo "PID files found:"
                 echo "---------------"
-                ls -l /tmp/qemu-*.pid 2>/dev/null || echo "No PID files found."
+                ls -l ./tmp/qemu-*.pid 2>/dev/null || echo "No PID files found."
             fi
             exit 0
             ;;
@@ -259,10 +257,10 @@ start_qemu() {
         # Use different approaches based on OS
         if [ "$OS_TYPE" = "Darwin" ]; then
             # macOS approach: use nohup to avoid fork() issues
-            nohup $cmd > /tmp/qemu-${NAME}.log 2>&1 &
+            nohup $cmd > ./tmp/${NAME}.log 2>&1 &
             PID=$!
             echo $PID > $PIDFILE
-            echo "VM started with PID: $PID (logs at /tmp/qemu-${NAME}.log)"
+            echo "VM started with PID: $PID (logs at ./tmp/${NAME}.log)"
         else
             # Linux approach: use QEMU's native daemonize
             cmd+=" -daemonize -pidfile $PIDFILE"

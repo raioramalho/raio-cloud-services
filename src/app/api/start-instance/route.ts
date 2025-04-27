@@ -10,7 +10,7 @@ const readFile = utilPromisify(readFileCallback);
 const writeFile = utilPromisify(writeFileCallback);
 
 async function startVirtualMachine(vmSettings: VirtualMachineSettings): Promise<{ output: string, pid?: number }> {
-  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -c ${vmSettings.cpu} -m ${vmSettings.memory} -i ${vmSettings.image} -s ${vmSettings.storage} -u ${vmSettings.cidata} -g -d`);
+  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -c ${vmSettings.cpu} -m ${vmSettings.memory} -i ${vmSettings.image} -s ${vmSettings.storage} -u ${vmSettings.cidata} -n ${vmSettings.name} -g -d`);
 
   if (stderr) {
     throw new Error(stderr);

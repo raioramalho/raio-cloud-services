@@ -38,8 +38,9 @@ export async function POST(requisicao: NextRequest) {
         // VM already terminated, continue with deletion
       }
     await execAsync(`rm -f ${vmInfo.cidata} ${vmInfo.storage} ${vmInfo.image}`)
-    await execAsync(`rm -f ./tmp/${vmInfo.name}.json`)
     await execAsync(`rm -f ./tmp/${jsonFile}`)
+    await execAsync(`rm -f ./tmp/${vmInfo.name}*`)
+    
 
     return NextResponse.json(
       {

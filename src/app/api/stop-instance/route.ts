@@ -9,8 +9,8 @@ const execAsync = promisify(exec);
 const readFile = utilPromisify(readFileCallback);
 const writeFile = utilPromisify(writeFileCallback);
 
-async function stopVirtualMachine(pid: number): Promise<string> {
-  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -k ${pid}`);
+async function stopVirtualMachine(name: string, pid: number): Promise<string> {
+  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -n ${name} -k ${pid}`);
 
   if (stderr) {
     throw new Error(stderr);
@@ -56,7 +56,7 @@ export async function POST(requisicao: NextRequest) {
       );
     }
 
-    const output = await stopVirtualMachine(vmSettings.pid);
+    const output = await stopVirtualMachine(vmSettings.name, vmSettings.pid);
     
     vmSettings.pid = 0;
     vmSettings.status = "Pendente";
