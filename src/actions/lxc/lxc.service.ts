@@ -7,11 +7,11 @@ export default class LxcService {
   /**
    * Lista todos os contêineres LXC
    */
-  async listContainers(): Promise<any[]> {
+  async listContainers() {
     try {
       const execAsync = promisify(exec);
       const { stdout } = await execAsync(`sudo lxc list --format json`);
-      const json: any = JSON.parse(stdout);
+      const json = JSON.parse(stdout);
       return json;
     } catch (error) {
       console.error('Erro ao listar contêineres:', error);
@@ -22,7 +22,7 @@ export default class LxcService {
   /**
    * Busca informações detalhadas de um contêiner específico
    */
-  async getContainer(name: string): Promise<any | null> {
+  async getContainer(name: string) {
     try {
       const execAsync = promisify(exec);
       const { stdout } = await execAsync(`sudo lxc info ${name} --format json`);

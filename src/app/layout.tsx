@@ -30,18 +30,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+          <main>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           disableTransitionOnChange>
 
           <Navbar />
-          <main>
-            {children}
-          </main>
-          <Sidebar children={undefined} />
+            {/* {children} */}
+          <Sidebar children={children} />
 
         </ThemeProvider>
+          </main>
       </body>
     </html>
   );

@@ -1,22 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-import { readdirSync, readFileSync } from 'fs';
-import LxcService from '@/app/actions/lxc/lxc.service';
+import LxcService from '@/actions/lxc/lxc.service';
 
-const execAsync = promisify(exec);
-
-export async function GET(requisicao: NextRequest) {
+export async function GET() {
     try {
 
         const data = await new LxcService().listContainers();
-
-
         return NextResponse.json(
             data,
             { status: 200 }
         )
-    } catch (erro: any) {
+    } catch(erro: any) {
         console.error(`Erro ao processar requisição: ${erro.message}`)
         return NextResponse.json(
             {
