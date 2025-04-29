@@ -135,7 +135,7 @@ build_iso() {
     fi
 
     echo "💿 Gerando ISO '$ISO_OUTPUT'..."
-    hdiutil makehybrid -o "$ISO_OUTPUT" -iso -joliet -default-volume-name cidata "$CIDATA_DIR"
+    genisoimage -o "$ISO_OUTPUT" -R -J -V cidata "$CIDATA_DIR"
 
     echo "✅ ISO criada com sucesso: $ISO_OUTPUT"
 }

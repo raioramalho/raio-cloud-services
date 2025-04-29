@@ -44,7 +44,7 @@ async function createVirtualMachine(dto: CreateVirtualMachineDto, cidataPath: st
 }
 
 async function startVirtualMachine(vmSettings: VirtualMachineSettings): Promise<{ output: string, pid?: number }> {
-  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -c ${vmSettings.cpu} -m ${vmSettings.memory} -i ${vmSettings.image} -s ${vmSettings.storage} -u ${vmSettings.cidata} -n ${vmSettings.name} -g -d`);
+  const { stdout, stderr } = await execAsync(`bash ./scripts/start-vm.sh -c ${vmSettings.cpu} -m ${vmSettings.memory} -i ${vmSettings.image} -s ${vmSettings.storage} -u ${vmSettings.cidata} -n ${vmSettings.name} -d -g`);
 
   if (stderr) {
     throw new Error(stderr);
@@ -81,7 +81,7 @@ export async function POST(requisicao: NextRequest) {
     }
 
     const start = await startVirtualMachine(vmSettings);    
-    await writeFile(`./tmp/${body.name}_settings.json`, JSON.stringify({
+    await writeFile(`/tmp/${body.name}_settings.json`, JSON.stringify({
       ...vmSettings,
       pid: start.pid
     }, null, 2))

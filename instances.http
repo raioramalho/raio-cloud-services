@@ -5,7 +5,7 @@ Content-Type: application/json
   "name": "nginx",
   "size": { "cpu": 2, "memory": "4G" },
   "diskSize": "20",
-  "image": "debian-11-adm64.img",
+  "image": "debian-11-genericcloud-arm64.qcow2",
   "sshKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHw9l8Kt0IG1CEsftGTUzxXW60QeHLi1OgggNGB37g0y raiocloud@gmail.com",
   "userName": "root"
 }

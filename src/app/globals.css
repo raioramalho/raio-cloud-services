@@ -1,64 +1,108 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* Paleta Executiva - Modo Claro */
+    --background: 0 0% 98%;            /* Fundo branco levemente acinzentado */
+    --foreground: 215 50% 15%;         /* Texto azul escuro */
+    --card: 0 0% 100%;                 /* Cards brancos */
+    --card-foreground: 215 50% 15%;    /* Texto de cards azul escuro */
+    --popover: 0 0% 100%;              /* Popover branco */
+    --popover-foreground: 215 50% 15%; /* Texto de popover azul escuro */
+    
+    /* Azul executivo como cor primária */
+    --primary: 215 75% 25%;            /* Azul executivo profundo */
+    --primary-foreground: 0 0% 100%;   /* Branco em fundos primários */
+    
+    /* Cinza como cor secundária */
+    --secondary: 210 15% 70%;          /* Cinza corporativo */
+    --secondary-foreground: 215 50% 15%; /* Texto escuro em fundo cinza */
+    
+    /* Madeira como cor de destaque */
+    --accent: 30 35% 45%;              /* Tom madeira (castanho médio) */
+    --accent-foreground: 0 0% 100%;    /* Branco em fundos de destaque */
+    
+    /* Preto como cor de contraste */
+    --destructive: 0 0% 15%;           /* Preto suave para áreas de destaque */
+    --destructive-foreground: 0 0% 98%; /* Branco em fundos escuros */
+    
+    /* Verde como cor de sucesso */
+    --success: 145 30% 40%;            /* Verde escuro (mais sóbrio) */
+    --success-foreground: 0 0% 100%;   /* Branco em fundos de sucesso */
+    
+    /* Âmbar como cor de alerta */
+    --warning: 30 60% 50%;             /* Âmbar mais terroso */
+    --warning-foreground: 0 0% 15%;    /* Texto escuro em fundos de alerta */
+    
+    /* Cores neutras */
+    --muted: 210 15% 95%;              /* Cinza claro */
+    --muted-foreground: 215 15% 45%;   /* Cinza médio para textos secundários */
+    --border: 210 15% 90%;             /* Bordas sutis */
+    --input: 210 15% 90%;              /* Bordas de input */
+    --ring: 215 75% 25%;               /* Anel de foco igual ao primário */
+    
+    /* Cores para gráficos */
+    --chart-1: 215 75% 25%;            /* Azul executivo */
+    --chart-2: 210 15% 70%;            /* Cinza */
+    --chart-3: 30 35% 45%;             /* Madeira */
+    --chart-4: 0 0% 15%;               /* Preto suave */
+    --chart-5: 210 15% 40%;            /* Cinza escuro */
+    --chart-6: 215 50% 45%;            /* Azul médio */
+    
     --radius: 0.5rem;
   }
+  
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Paleta Executiva - Modo Escuro */
+    --background: 215 30% 10%;         /* Fundo preto azulado */
+    --foreground: 210 15% 95%;         /* Texto claro */
+    --card: 215 25% 15%;               /* Cards um pouco mais claros que o fundo */
+    --card-foreground: 210 15% 95%;    /* Texto de cards claro */
+    --popover: 215 25% 15%;            /* Popover um pouco mais claro que o fundo */
+    --popover-foreground: 210 15% 95%; /* Texto de popover claro */
+    
+    /* Azul executivo como cor primária */
+    --primary: 215 70% 40%;            /* Azul executivo no escuro */
+    --primary-foreground: 0 0% 100%;   /* Branco em fundos primários */
+    
+    /* Cinza como cor secundária */
+    --secondary: 210 15% 30%;          /* Cinza corporativo escuro */
+    --secondary-foreground: 210 15% 95%; /* Texto claro em fundo cinza */
+    
+    /* Madeira como cor de destaque */
+    --accent: 30 25% 35%;              /* Tom madeira escuro */
+    --accent-foreground: 0 0% 100%;    /* Branco em fundos de destaque */
+    
+    /* Preto como cor de contraste (mais claro no modo escuro) */
+    --destructive: 0 0% 20%;           /* Preto suave para áreas de destaque */
+    --destructive-foreground: 0 0% 98%; /* Branco em fundos escuros */
+    
+    /* Verde como cor de sucesso */
+    --success: 145 30% 35%;            /* Verde escuro (mais sóbrio) */
+    --success-foreground: 0 0% 100%;   /* Branco em fundos de sucesso */
+    
+    /* Âmbar como cor de alerta */
+    --warning: 30 50% 40%;             /* Âmbar mais terroso */
+    --warning-foreground: 0 0% 15%;    /* Texto escuro em fundos de alerta */
+    
+    /* Cores neutras */
+    --muted: 215 30% 20%;              /* Cinza azulado escuro */
+    --muted-foreground: 210 15% 70%;   /* Cinza médio para textos secundários */
+    --border: 215 25% 25%;             /* Bordas sutis */
+    --input: 215 25% 25%;              /* Bordas de input */
+    --ring: 215 70% 40%;               /* Anel de foco igual ao primário */
+    
+    /* Cores para gráficos */
+    --chart-1: 215 70% 40%;            /* Azul executivo */
+    --chart-2: 210 15% 60%;            /* Cinza */
+    --chart-3: 30 25% 35%;             /* Madeira */
+    --chart-4: 0 0% 25%;               /* Preto suave */
+    --chart-5: 210 15% 30%;            /* Cinza escuro */
+    --chart-6: 215 40% 50%;            /* Azul médio */
   }
 }
 
