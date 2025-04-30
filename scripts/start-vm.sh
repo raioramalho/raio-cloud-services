@@ -225,7 +225,7 @@ done
 
 # Function to start QEMU
 start_qemu() {
-    local cmd="qemu-system-x86_64"
+    local cmd="qemu-system-x86"
     cmd+=" -m $MEMORY"
     cmd+=" -smp $CPUS"
     cmd+=" -drive file=$IMAGE,format=qcow2"
@@ -238,7 +238,7 @@ start_qemu() {
         cmd+=" -drive file=$USERDATA,format=raw,if=virtio"
     fi
     
-    cmd+=" -net nic -net user,hostfwd=tcp::2222-:22,hostfwd=tcp::8080-:80,hostfwd=tcp::8443-:443"
+    # cmd+=" -net nic -net user,hostfwd=tcp::2222-:22,hostfwd=tcp::8080-:80,hostfwd=tcp::8443-:443"
     # cmd+=" -netdev tap,id=net0,ifname=tap0 -device e1000,netdev=net0"
     
     if [ $GRAPHIC -eq 0 ]; then

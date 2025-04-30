@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     fetches: {
       fullUrl: true
     }
-  }
+  },
+  allowedDevOrigins: ["http://localhost:3000", "http://192.168.1.2:3000", "192.168.1.2"],
 };
 
 export default nextConfig;
