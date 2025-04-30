@@ -35,9 +35,8 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="dark"
           disableTransitionOnChange>
-
-          <Navbar />
-            {/* {children} */}
+          {/* <Navbar /> */}
+            
           <Sidebar children={children} />
 
         </ThemeProvider>
