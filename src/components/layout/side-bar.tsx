@@ -42,10 +42,10 @@ const Header = () => {
     <header className="h-16 border-b fixed top-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center px-4 z-50">
       <div className="flex justify-between items-center w-full">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
-            RC
+          <div className="h-8 w-12 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
+            RCS
           </div>
-          <span className="font-bold text-lg">Raio Cloud Systems</span>
+          <span className="font-bold text-lg">Raio Cloud Services</span>
         </div>
         
         <div className="flex items-center gap-4">

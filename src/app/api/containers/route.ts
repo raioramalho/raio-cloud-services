@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import LxcService from '@/actions/lxc/lxc.service';
 
+
+export async function POST(requisicao: NextRequest) {
+    try {
+        const { name, image, network } = await requisicao.json();
+
+        const container = await new LxcService().createContainer({ name, image, network });
+        return NextResponse.json(
+            container,
+            { status: 200 }
+        )
+    }
+    catch(erro: any) {
+        console.error(`Erro ao processar requisição: ${erro.message}`)
+        return NextResponse.json(
+            {
+                erro: 'Erro ao processar requisição',
+                detalhes: erro.message
+            },
+            { status: 500 }
+        )
+    }
+}
+
 export async function GET() {
     try {
 
