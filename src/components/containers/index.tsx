@@ -45,7 +45,7 @@ export default async function ContainerInstances() {
       'Content-Type': 'application/json'
     },
     next: {
-      tags: ['containers'],
+      tags: ['virtual-machine'],
       revalidate: 10
     }
   }).then(res => res.json());
@@ -99,9 +99,9 @@ export default async function ContainerInstances() {
         </div>
         <span className="flex gap-2">
           <NewItemIcon
-                    icon={<PlusCircle className="h-4 w-4" />}
-                    destin="/containers/new"
-                    />
+            icon={<PlusCircle className="h-4 w-4" />}
+            destin="/container"
+          />
           <form action={refreshContainers}>
             <Button variant="outline" size="icon" type="submit">
               <RefreshCw className="h-4 w-4" />
@@ -126,24 +126,37 @@ export default async function ContainerInstances() {
               </tr>
             </thead>
             <tbody>
-              {containers.map((container: ContainerInfo, index) => (
+              {(await containers).filter((con) => con.type === "container").map((container: ContainerInfo, index) => (
                 <tr key={index} className="border-t hover:bg-muted/50">
                   <td className="py-3 px-4">{container.name}</td>
-                  <td className="py-3 px-4">{container.config['image.os'] || '-'}</td>
+                  <td className="py-3 px-4">{container.config['image.os'].toLocaleLowerCase() || '-'}</td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 text-xs rounded-full ${getStatusStyle(container.status)}`}>
                       {container.status || 'Pendente'}
                     </span>
                   </td>
-                  <td className="py-3 px-4">{container.state?.network?.eth0?.addresses?.[0]?.address || '-'}</td>
                   <td className="py-3 px-4">
+                    {container.state?.network?.eth0?.addresses?.[0]?.address ? (
+                      <div className="flex gap-2">
+                        <span>{container.state.network.eth0.addresses[0].address}</span>
+                        <a href={`http://${container.state.network.eth0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTP</a>
+                        <a href={`https://${container.state.network.eth0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTPS</a>
+                      </div>
+                    ) : container.state?.network?.enp5s0?.addresses?.[0]?.address ? (
+                      <div className="flex gap-2">
+                        <span>{container.state.network.enp5s0.addresses[0].address}</span>
+                        <a href={`http://${container.state.network.enp5s0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTP</a>
+                        <a href={`https://${container.state.network.enp5s0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTPS</a>
+                      </div>
+                    ) : '-'}
+                  </td>                  <td className="py-3 px-4">
                     {formatBytes(container.state?.memory?.usage || 0)} / {formatBytes(container.state?.memory?.limit || 0)}
                   </td>
                   <td className="py-3 px-4">
                     {container.state?.cpu?.usage ? `${(container.state.cpu.usage / 1e9).toFixed(2)}s` : '-'}
                   </td>
                   <td className="py-3 px-4">
-                    {container.state?.uptime ? formatUptime(container.state.uptime) : '-'}
+                    {container.state?.uptime ? formatUptime(container?.state?.uptime) : '-'}
                   </td>
                   <td className="py-2 px-4 text-right">
                     <DropdownMenu>

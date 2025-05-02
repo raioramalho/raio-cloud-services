@@ -1,7 +1,8 @@
 'use server';
 
+import { ContainerInfo } from "@/app/shared/lxc.list.dto";
 import { Play, RefreshCw, Square, Trash2, PlusCircle, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { revalidateTag } from "next/cache";
 import {
   DropdownMenu,
@@ -11,72 +12,78 @@ import {
 } from "@/components/ui/dropdown-menu";
 import NewItemIcon from "../ux/new-item-icon";
 
+function formatUptime(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${minutes}m`;
+}
+
 const getStatusStyle = (status: string) => {
   switch (status) {
     case 'Running':
       return 'bg-green-100 text-green-800';
-    case 'Stopped':
+    case 'Inativo':
       return 'bg-red-100 text-red-800';
-    case 'Pending':
+    case 'Pendente':
       return 'bg-yellow-100 text-yellow-800';
     default:
       return 'bg-gray-100 text-gray-800';
   }
 };
 
-export default async function VirtualInstances() {
-  const vms = await fetch('http://localhost:3000/api/machines', {
+function formatBytes(bytes: number) {
+  if (bytes === 0) return '0 B';
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
+}
+
+export default async function MachcinesInstances() {
+  const containers: Promise<ContainerInfo[]> = await fetch('http://localhost:3000/api/containers', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     },
     next: {
-      tags: ['machines'],
+      tags: ['containers'],
       revalidate: 10
     }
   }).then(res => res.json());
-
-  async function deleteVM(formData: FormData) {
+  async function deleteContainer(formData: FormData) {
     'use server';
     const name = formData.get('name') as string;
-    const pid = Number(formData.get('pid'));
-    const id = formData.get('id') as string;
-
-    await fetch('http://localhost:3000/api/delete-instance', {
-      method: 'POST',
-      body: JSON.stringify({ name, pid, id }),
+    await fetch('http://localhost:3000/api/containers', {
+      method: 'DELETE',
+      body: JSON.stringify({ name })
     });
-
-    revalidateTag('machines');
+    revalidateTag('containers');
   }
 
-  async function startVM(formData: FormData) {
+  async function startContainer(formData: FormData) {
     'use server';
-    const id = formData.get('id') as string;
-
-    await fetch('http://localhost:3000/api/start-instance', {
-      method: 'POST',
-      body: JSON.stringify({ id }),
+    const name = formData.get('name') as string;
+    await fetch('http://localhost:3000/api/containers', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'start', name })
     });
-
-    revalidateTag('machines');
+    revalidateTag('containers');
   }
 
-  async function stopVM(formData: FormData) {
+  async function stopContainer(formData: FormData) {
     'use server';
-    const id = formData.get('id') as string;
-
-    await fetch('http://localhost:3000/api/stop-instance', {
-      method: 'POST',
-      body: JSON.stringify({ id }),
+    const name = formData.get('name') as string;
+    await fetch('http://localhost:3000/api/containers', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'stop', name })
     });
-
-    revalidateTag('machines');
+    revalidateTag('containers');
   }
 
-  async function refreshVMs(formData: FormData) {
+  async function refreshContainers(formData: FormData) {
     'use server';
-    revalidateTag('machines');
+    revalidateTag('containers');
   }
 
   return (
@@ -84,21 +91,18 @@ export default async function VirtualInstances() {
       <div className="flex justify-between items-center mb-6">
         <div className="space-y-2">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight">
-            Máquinas Virtuais
+            Maquinas Virtuais
           </h1>
           <p className="text-xs md:text-sm lg:text-base text-muted-foreground">
-            Lista de VMs e seus principais dados operacionais
+            Lista de maquinas virtuais e seus detalhes principais
           </p>
         </div>
         <span className="flex gap-2">
-          {/* <Button variant="outline" size="icon" type="button"> */}
           <NewItemIcon
-          icon={<PlusCircle className="h-4 w-4" />}
-          destin="/instances/new"
+            icon={<PlusCircle className="h-4 w-4" />}
+            destin="/container"
           />
-            
-          {/* </Button> */}
-          <form action={refreshVMs}>
+          <form action={refreshContainers}>
             <Button variant="outline" size="icon" type="submit">
               <RefreshCw className="h-4 w-4" />
             </Button>
@@ -112,23 +116,48 @@ export default async function VirtualInstances() {
             <thead>
               <tr className="bg-muted/50">
                 <th className="py-3 px-4 text-left font-medium">Nome</th>
+                <th className="py-3 px-4 text-left font-medium">Imagem</th>
                 <th className="py-3 px-4 text-left font-medium">Status</th>
-                <th className="py-3 px-4 text-left font-medium">Processo</th>
                 <th className="py-3 px-4 text-left font-medium">IP</th>
+                <th className="py-3 px-4 text-left font-medium">Memória</th>
+                <th className="py-3 px-4 text-left font-medium">CPU</th>
+                <th className="py-3 px-4 text-left font-medium">Uptime</th>
                 <th className="py-3 px-4 text-right font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {vms.map((vm: any, index: number) => (
+              {(await containers).filter((con) => con.type === "virtual-machine").map((container: ContainerInfo, index) => (
                 <tr key={index} className="border-t hover:bg-muted/50">
-                  <td className="py-3 px-4">{vm.name}</td>
+                  <td className="py-3 px-4">{container.name}</td>
+                  <td className="py-3 px-4">{container.config['image.os'].toLocaleLowerCase() || '-'}</td>
                   <td className="py-3 px-4">
-                    <span className={`px-2 py-1 text-xs rounded-full ${getStatusStyle(vm.status)}`}>
-                      {vm.status || 'Desconhecido'}
+                    <span className={`px-2 py-1 text-xs rounded-full ${getStatusStyle(container.status)}`}>
+                      {container.status || 'Pendente'}
                     </span>
                   </td>
-                  <td className="py-3 px-4">{vm.pid || '-'}</td>
-                  <td className="py-3 px-4">{vm.ip || '-'}</td>
+                  <td className="py-3 px-4">
+                    {container.state?.network?.eth0?.addresses?.[0]?.address ? (
+                      <div className="flex gap-2">
+                        <span>{container.state.network.eth0.addresses[0].address}</span>
+                        <a href={`http://${container.state.network.eth0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTP</a>
+                        <a href={`https://${container.state.network.eth0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTPS</a>
+                      </div>
+                    ) : container.state?.network?.enp5s0?.addresses?.[0]?.address ? (
+                      <div className="flex gap-2">
+                        <span>{container.state.network.enp5s0.addresses[0].address}</span>
+                        <a href={`http://${container.state.network.enp5s0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTP</a>
+                        <a href={`https://${container.state.network.enp5s0.addresses[0].address}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">HTTPS</a>
+                      </div>
+                    ) : '-'}
+                  </td>                  <td className="py-3 px-4">
+                    {formatBytes(container.state?.memory?.usage || 0)} / {formatBytes(container.state?.memory?.limit || 0)}
+                  </td>
+                  <td className="py-3 px-4">
+                    {container.state?.cpu?.usage ? `${(container.state.cpu.usage / 1e9).toFixed(2)}s` : '-'}
+                  </td>
+                  <td className="py-3 px-4">
+                    {container.state?.uptime ? formatUptime(container?.state?.uptime) : '-'}
+                  </td>
                   <td className="py-2 px-4 text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -137,26 +166,24 @@ export default async function VirtualInstances() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <form action={startVM}>
-                          <input type="hidden" name="id" value={vm.id} />
+                        <form action={startContainer}>
+                          <input type="hidden" name="name" value={container.name} />
                           <DropdownMenuItem asChild>
                             <button type="submit" className="flex items-center gap-2">
                               <Play className="h-4 w-4" /> Iniciar
                             </button>
                           </DropdownMenuItem>
                         </form>
-                        <form action={stopVM}>
-                          <input type="hidden" name="id" value={vm.id} />
+                        <form action={stopContainer}>
+                          <input type="hidden" name="name" value={container.name} />
                           <DropdownMenuItem asChild>
                             <button type="submit" className="flex items-center gap-2">
                               <Square className="h-4 w-4" /> Parar
                             </button>
                           </DropdownMenuItem>
                         </form>
-                        <form action={deleteVM}>
-                          <input type="hidden" name="name" value={vm.name} />
-                          <input type="hidden" name="pid" value={vm.pid} />
-                          <input type="hidden" name="id" value={vm.id} />
+                        <form action={deleteContainer}>
+                          <input type="hidden" name="name" value={container.name} />
                           <DropdownMenuItem asChild>
                             <button type="submit" className="flex items-center gap-2 text-red-600">
                               <Trash2 className="h-4 w-4" /> Excluir

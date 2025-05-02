@@ -1,7 +1,7 @@
 import { promisify } from "node:util";
 import { exec } from 'child_process';
 
-export default class LxcService {
+export default class LxcContainersService {
   constructor() {}
 
   /**

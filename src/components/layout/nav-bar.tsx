@@ -28,7 +28,7 @@ const Logo = () => {
       <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold">
         RC
       </div>
-      <span className="font-bold text-lg hidden sm:block">Raio Cloud Systems</span>
+      <span className="font-bold text-lg hidden sm:block">Raio Cloud Services</span>
     </div>
   );
 };
