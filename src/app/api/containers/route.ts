@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import LxcService from '@/actions/lxc/lxc.service';
+import LxcContainersService from '@/actions/lxc/lxc.containers.service';
 
 
 export async function POST(requisicao: NextRequest) {
     try {
         const { name, image, network } = await requisicao.json();
 
-        const container = await new LxcService().createContainer({ name, image, network });
+        const container = await new LxcContainersService().createContainer({ name, image, network });
         return NextResponse.json(
             container,
             { status: 200 }
@@ -27,7 +27,7 @@ export async function POST(requisicao: NextRequest) {
 export async function GET() {
     try {
 
-        const data = await new LxcService().listContainers();
+        const data = await new LxcContainersService().listContainers();
         return NextResponse.json(
             data,
             { status: 200 }
@@ -50,10 +50,10 @@ export async function PUT(requisicao: NextRequest) {
 
         switch (action) {
             case 'stop':
-                await new LxcService().stopContainer(name);
+                await new LxcContainersService().stopContainer(name);
                 break;
             case 'start':
-                await new LxcService().startContainer(name);
+                await new LxcContainersService().startContainer(name);
             default:
                 return NextResponse.json(
                     {
@@ -88,7 +88,7 @@ export async function PUT(requisicao: NextRequest) {
 export async function DELETE(requisicao: NextRequest) {
     try {
         const { name } = await requisicao.json()
-        await new LxcService().deleteContainer(name);
+        await new LxcContainersService().deleteContainer(name);
         return NextResponse.json(
             {
                 status: 'SUCCESS',

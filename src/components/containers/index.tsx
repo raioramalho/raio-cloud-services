@@ -56,7 +56,7 @@ export default async function ContainerInstances() {
       method: 'DELETE',
       body: JSON.stringify({ name })
     });
-    revalidateTag('virtual-machine');
+    revalidateTag('containers');
   }
 
   async function startContainer(formData: FormData) {
@@ -67,7 +67,7 @@ export default async function ContainerInstances() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'start', name })
     });
-    revalidateTag('virtual-machine');
+    revalidateTag('containers');
   }
 
   async function stopContainer(formData: FormData) {
@@ -78,12 +78,12 @@ export default async function ContainerInstances() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'stop', name })
     });
-    revalidateTag('virtual-machine');
+    revalidateTag('containers');
   }
 
   async function refreshContainers(formData: FormData) {
     'use server';
-    revalidateTag('virtual-machine');
+    revalidateTag('containers');
   }
 
   return (

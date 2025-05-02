@@ -28,12 +28,12 @@ type NavItem = {
 
 const SIDEBAR_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/", icon: <Home className="h-5 w-5" /> },
-  { label: "API Keys", href: "/keys", icon: <KeyIcon className="h-5 w-5" /> },
-  { label: "Uso", href: "/usage", icon: <ChartIcon className="h-5 w-5" /> },
+  // { label: "API Keys", href: "/keys", icon: <KeyIcon className="h-5 w-5" /> },
+  // { label: "Uso", href: "/usage", icon: <ChartIcon className="h-5 w-5" /> },
   { label: "Produtos", href: "/product", icon: <BoxIcon className="h-5 w-5" /> },
-  { label: "Usuários", href: "/users", icon: <Users className="h-5 w-5" /> },
-  { label: "Faturamento", href: "/billing", icon: <CreditCard className="h-5 w-5" /> },
-  { label: "Configurações", href: "/settings", icon: <Settings className="h-5 w-5" /> },
+  // { label: "Usuários", href: "/users", icon: <Users className="h-5 w-5" /> },
+  // { label: "Faturamento", href: "/billing", icon: <CreditCard className="h-5 w-5" /> },
+  // { label: "Configurações", href: "/settings", icon: <Settings className="h-5 w-5" /> },
 ];
 
 // Componente de Header com logo e perfil
