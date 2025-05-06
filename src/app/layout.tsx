@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/layout/nav-bar";
 import Sidebar from "../components/layout/side-bar";
 import { ThemeProvider } from "next-themes";
 
@@ -26,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="antialiased">
+    <html lang="pt-BR" >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

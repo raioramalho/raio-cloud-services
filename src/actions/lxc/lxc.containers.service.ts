@@ -10,7 +10,7 @@ export default class LxcContainersService {
   async listContainers() {
     try {
       const execAsync = promisify(exec);
-      const { stdout } = await execAsync(`sudo lxc list --format json`);
+      const { stdout } = await execAsync(`sudo lxc list --format json | jq`);
       const json = JSON.parse(stdout);
       return json;
     } catch (error) {
@@ -135,4 +135,29 @@ export default class LxcContainersService {
       throw new Error(`Falha ao parar contêiner ${name}`);
     }
   }
+
+  /**
+   * Listar networks LXC
+   *  
+   */
+  async listNetworks(): Promise<{
+    name: string;
+    description: string;
+    type: string;
+    managed: boolean;
+    status: string;
+    config: Record<string, any>;
+    used_by: string[];
+    locations: any;
+  }[]> {
+    try {
+      const execAsync = promisify(exec);
+      const { stdout } = await execAsync(`sudo lxc network list --format json`);
+      const json = JSON.parse(stdout);
+      return json;
+    } catch (error) {
+      console.error('Erro ao listar networks:', error);
+      throw new Error('Falha ao listar networks');
+    }
+  }   
 }

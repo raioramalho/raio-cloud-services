@@ -1,6 +1,7 @@
 'use server';
 
 import LxcContainersService from "@/actions/lxc/lxc.containers.service";
+import Info from "@/components/info";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 ;
@@ -30,87 +31,9 @@ export default async function Home() {
       <div className="w-full max-w-7xl space-y-8 rounded-lg">
         <h1 className="text-3xl font-bold">Dashboard</h1>
 
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>CPU Usage</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="text-2xl font-bold flex items-center gap-2">
-                  65% <span className="text-sm text-muted-foreground font-normal">Intel i7-8700</span>
-                </div>
-                <div className="h-2 w-full bg-secondary rounded-full">
-                  <div className="h-2 bg-primary rounded-full transition-all" style={{ width: '65%' }}></div>
-                </div>
-                <p className="text-xs text-muted-foreground flex items-center justify-between">
-                  <span>6 Cores / 12 Threads</span>
-                  <span>3.2GHz - 4.6GHz</span>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+        <Info/>  
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Memory Usage</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="text-2xl font-bold flex items-center gap-2">
-                  8.4GB <span className="text-sm text-muted-foreground font-normal">of 16GB</span>
-                </div>
-                <div className="h-2 w-full bg-secondary rounded-full">
-                  <div className="h-2 bg-primary rounded-full transition-all" style={{ width: '52.5%' }}></div>
-                </div>
-                <p className="text-xs text-muted-foreground flex items-center justify-between">
-                  <span>DDR4 2400MHz</span>
-                  <span>Ubuntu 22.04 LTS</span>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Storage Usage</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="text-2xl font-bold flex items-center gap-2">
-                  256GB <span className="text-sm text-muted-foreground font-normal">of 512GB</span>
-                </div>
-                <div className="h-2 w-full bg-secondary rounded-full">
-                  <div className="h-2 bg-primary rounded-full transition-all" style={{ width: '50%' }}></div>
-                </div>
-                <p className="text-xs text-muted-foreground flex items-center justify-between">
-                  <span>NVMe SSD</span>
-                  <span>500MB/s</span>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Network Usage</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="text-2xl font-bold flex items-center gap-2">
-                  450MB/s <span className="text-sm text-muted-foreground font-normal">1Gbps</span>
-                </div>
-                <div className="h-2 w-full bg-secondary rounded-full">
-                  <div className="h-2 bg-primary rounded-full transition-all" style={{ width: '45%' }}></div>
-                </div>
-                <p className="text-xs text-muted-foreground flex items-center justify-between">
-                  <span>eth0</span>
-                  <span>TX: 2.1GB RX: 1.8GB</span>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>        
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader>

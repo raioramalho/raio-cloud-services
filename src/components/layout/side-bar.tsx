@@ -114,7 +114,7 @@ const SideNavigation = () => {
 };
 
 // Componente principal que combina todos os elementos
-export default function AppLayout({ children }: { children: ReactNode }) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
