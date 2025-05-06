@@ -38,17 +38,8 @@ function formatBytes(bytes: number) {
   return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
 }
 
-export default async function ContainerInstances() {
-  const containers: Promise<ContainerInfo[]> = await fetch('http://localhost:3000/api/containers', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    next: {
-      tags: ['virtual-machine'],
-      revalidate: 10
-    }
-  }).then(res => res.json());
+export default async function ContainerInstances(props: { containers: ContainerInfo[] }) {
+  const containers = props.containers;
   async function deleteContainer(formData: FormData) {
     'use server';
     const name = formData.get('name') as string;
