@@ -83,7 +83,9 @@ export default async function MachcinesInstances() {
 
   async function refreshContainers(formData: FormData) {
     'use server';
+    console.log(formData)
     revalidateTag('containers');
+
   }
 
   return (

@@ -1,4 +1,4 @@
-const UPDATE_INTERVAL = 100; // 1 second
+// const UPDATE_INTERVAL = 100; // 1 second
 
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import os from 'os';

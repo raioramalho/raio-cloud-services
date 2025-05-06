@@ -81,8 +81,8 @@ export default async function ContainerInstances() {
     revalidateTag('containers');
   }
 
-  async function refreshContainers(formData: FormData) {
-    'use server';
+  async function refreshContainers() {
+    'use server';    
     revalidateTag('containers');
   }
 

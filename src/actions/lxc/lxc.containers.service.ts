@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { promisify } from "node:util";
 import { exec } from 'child_process';
 

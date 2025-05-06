@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import LxcContainersService from "@/actions/lxc/lxc.containers.service";

@@ -29,6 +29,7 @@ export interface Device {
 }
 
 export interface ContainerState {
+  uptime: number;
   status: string;
   status_code: number;
   disk: {
@@ -40,6 +41,7 @@ export interface ContainerState {
   memory: {
     usage: number;
     usage_peak: number;
+    limit: number;
     total: number;
     swap_usage: number;
     swap_usage_peak: number;

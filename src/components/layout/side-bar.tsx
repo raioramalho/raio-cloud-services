@@ -7,12 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { 
   Home, 
-  Key as KeyIcon, 
-  BarChart3 as ChartIcon, 
   Box as BoxIcon, 
-  Users, 
-  CreditCard, 
-  Settings, 
   HelpCircle, 
   FileText 
 } from "lucide-react";
