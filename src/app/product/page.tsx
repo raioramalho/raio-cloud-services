@@ -10,7 +10,7 @@ export default async function Dashboard() {
         'Content-Type': 'application/json'
       },
       next: {
-        tags: ['virtual-machine'],
+        tags: ['instances'],
         revalidate: 3
       }
     }).then(res => res.json());
