@@ -47,7 +47,7 @@ export default async function MachcinesInstances(props: { containers: ContainerI
       method: 'DELETE',
       body: JSON.stringify({ name })
     });
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   async function startContainer(formData: FormData) {
@@ -58,7 +58,7 @@ export default async function MachcinesInstances(props: { containers: ContainerI
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'start', name })
     });
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   async function stopContainer(formData: FormData) {
@@ -69,13 +69,13 @@ export default async function MachcinesInstances(props: { containers: ContainerI
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'stop', name })
     });
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   async function refreshContainers(formData: FormData) {
     'use server';
     console.log(formData)
-    revalidateTag('containers');
+    revalidateTag('instances');
 
   }
 

@@ -47,7 +47,7 @@ export default async function ContainerInstances(props: { containers: ContainerI
       method: 'DELETE',
       body: JSON.stringify({ name })
     });
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   async function startContainer(formData: FormData) {
@@ -58,7 +58,7 @@ export default async function ContainerInstances(props: { containers: ContainerI
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'start', name })
     });
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   async function stopContainer(formData: FormData) {
@@ -69,12 +69,12 @@ export default async function ContainerInstances(props: { containers: ContainerI
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'stop', name })
     });
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   async function refreshContainers() {
     'use server';    
-    revalidateTag('containers');
+    revalidateTag('instances');
   }
 
   return (
