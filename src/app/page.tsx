@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
-import LxcContainersService from "@/actions/lxc/lxc.containers.service";
 import Info from "@/components/info";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,7 +20,14 @@ const getStatusStyle = (status: string) => {
 };
 
 export default async function Home() {
-  const instances = await new LxcContainersService().listContainers();
+  const instances = await fetch('http://localhost:3000/api/containers', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-cache',
+    next: { revalidate: 3 , tags: ['instances'] },
+  }).then((res) => res.json())
   const containers = instances.filter((con: any) => con.type === "container")
   const vms = instances.filter((vm: any) => vm.type === "virtual-machine")
   const storages: any[] = []
